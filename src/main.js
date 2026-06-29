@@ -3,7 +3,7 @@ import FilterView from './view/filter-view.js';
 import SortingView from './view/sorting-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './render.js';
-import { PointsModel } from './model/points-model.js';
+import PointsModel from './model/points-model.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
