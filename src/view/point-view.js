@@ -1,10 +1,11 @@
 import { createElement } from '../render.js';
 import { getDate, getTime, getTimeLength, setFavoriteClass } from '../utils.js';
 
-const createPointTemplate = (point, destinations) => {
-  const {basePrice, dateFrom, dateTo, isFavorite, type} = point;
-  const pointDestination = destinations.find((dest) => dest.id === point.destination);
-
+const createPointTemplate = (point, destinations, offers) => {
+  const {basePrice, dateFrom, dateTo, isFavorite, type } = point;
+  const pointDestination = destinations.find((dest) => dest.id === point.destination); // находим в пунктах назначения совпадающий по id c указанным в точке маршрута
+  const typeOffers = offers.find((offer) => offer.type === point.type).offers; // находим в офферах совпадающие по типу с указанным в точке маршрута
+  const selectedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id)); // находим в списке офферов данного типа, выбранные в точке маршрута
   const date = getDate(dateFrom);
   const startTime = getTime(dateFrom);
   const endTime = getTime(dateTo);
@@ -32,11 +33,14 @@ const createPointTemplate = (point, destinations) => {
           </p>
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
-            <li class="event__offer">
-              <span class="event__offer-title">Order Uber</span>
-              +€&nbsp;
-              <span class="event__offer-price">20</span>
-            </li>
+            ${selectedOffers.map((offer) => (
+      `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        +€&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+        </li>`
+    )).join('')}
+
           </ul>
           <button class="event__favorite-btn ${favoriteClass}" type="button">
             <span class="visually-hidden">Add to favorite</span>
@@ -53,13 +57,14 @@ const createPointTemplate = (point, destinations) => {
 };
 
 export default class PointView {
-  constructor({ point }, destinations) {
+  constructor({ point }, destinations, offers) {
     this.point = point;
     this.destinations = destinations;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createPointTemplate(this.point, this.destinations);
+    return createPointTemplate(this.point, this.destinations, this.offers);
   }
 
   getElement() {
