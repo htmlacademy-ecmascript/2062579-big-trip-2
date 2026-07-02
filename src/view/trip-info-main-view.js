@@ -1,16 +1,14 @@
 import { createElement } from '../render.js';
 
-const createTripInfoMain = () => (
-  `<div class="trip-info__main">
+const createTripInfoMain = () => `<div class="trip-info__main">
     <h1 class="trip-info__title">Amsterdam — Chamonix — Geneva</h1>
 
     <p class="trip-info__dates">18&nbsp;—&nbsp;20 Mar</p>
-  </div>`
-);
+  </div>`;
 
 export default class TripInfoMainView {
   getTemplate() {
-    return createTripInfoMain;
+    return createTripInfoMain();
   }
 
   getElement() {

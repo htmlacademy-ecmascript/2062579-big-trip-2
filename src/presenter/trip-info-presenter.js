@@ -1,7 +1,7 @@
 import { RenderPosition, render } from '../render.js';
-import TripInfoSectionView from './trip-info-container-view.js';
-import TripInfoMainView from './trip-info-main-view.js';
-import TripInfoCostView from './trip-info-cost-view.js';
+import TripInfoSectionView from '../view/trip-info-container-view.js';
+import TripInfoMainView from '../view/trip-info-main-view.js';
+import TripInfoCostView from '../view/trip-info-cost-view.js';
 
 export default class TripInfoView {
   infoSection = new TripInfoSectionView();

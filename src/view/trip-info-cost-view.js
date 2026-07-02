@@ -1,14 +1,12 @@
 import { createElement } from '../render.js';
 
-const createTripInfoCost = () => (
-  `<p class="trip-info__cost">
+const createTripInfoCost = () => `<p class="trip-info__cost">
       Total: €&nbsp;<span class="trip-info__cost-value">1230</span>
-    </p>`
-);
+  </p>`;
 
 export default class TripInfoCostView {
   getTemplate() {
-    return createTripInfoCost;
+    return createTripInfoCost();
   }
 
   getElement() {
