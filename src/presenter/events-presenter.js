@@ -25,39 +25,44 @@ export default class EventsPresenter {
 
     render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
 
-    for(let i = 1; i < this.#eventsPoints.length; i++) {
+    for(let i = 0; i < this.#eventsPoints.length; i++) {
       this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
     }
   }
 
   #renderPoint(point, destinations, offers) {
-    const escKeyDownHandler = (evt) => {
+    const escKeyDownHandler = (evt) => { // обработчик для закрытия по esc
       if(evt.key === 'Escape') {
         evt.preventDefault();
-        replaceEditToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
+        replaceEditToPoint(); // замена формы на точку
+        document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
       }
     };
 
-    const onEditClick = () => {
-      replacePointToEdit();
-      document.addEventListener('keydown', escKeyDownHandler);
+    const onEditClick = () => { // обработчик для открытия формы по кнопке-стрелке
+      replacePointToEdit(); // замена точки на форму
+      document.addEventListener('keydown', escKeyDownHandler); // добавление обработчика по esc
     };
 
-    const onCloseClick = () => {
-      replaceEditToPoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
+    const onCloseClick = () => { // обработчик для закрытия формы по кнопке-стрелке
+      replaceEditToPoint(); // замена формы на точку
+      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
+    };
+
+    const onFormSubmit = () => { // обработчик для закрытия формы по кнопке save (временно, потом заменю функционал на сабмит формы)
+      replaceEditToPoint(); // замена формы на точку
+      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
     };
 
     const pointComponent = new PointView({point}, destinations, offers, onEditClick);
 
-    const pointEditComponent = new EditPointView({point}, destinations, offers, onCloseClick);
+    const pointEditComponent = new EditPointView({point}, destinations, offers, onCloseClick, onFormSubmit);
 
-    function replacePointToEdit() {
+    function replacePointToEdit() { // функция замены точки на форму редактирования
       replace(pointEditComponent, pointComponent);
     }
 
-    function replaceEditToPoint() {
+    function replaceEditToPoint() { // функция замены формы редактирования на точку
       replace(pointComponent, pointEditComponent);
     }
 

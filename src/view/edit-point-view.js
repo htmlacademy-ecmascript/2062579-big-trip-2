@@ -106,20 +106,28 @@ export default class EditPointView extends AbstractView {
   #destinations = null;
   #offers = null;
   #handleEditClick = null;
+  #handleFormSubmit = null;
 
-  constructor({ point }, destinations, offers, onEditClick) {
+  constructor({ point }, destinations, offers, onEditClick, onFormSubmit) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleEditClick = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler); // на кнопку-стрелку вешаем обработчик по клику
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler); // на форму вешаем сабмит
   }
 
-  #editClickHandler = (evt) => {
+  #editClickHandler = (evt) => { // обработчик по клику
     evt.preventDefault();
     this.#handleEditClick();
+  };
+
+  #formSubmitHandler = (evt) => { // обработчик на сабмит формы
+    evt.preventDefault();
+    this.#handleFormSubmit();
   };
 
   get template() {
