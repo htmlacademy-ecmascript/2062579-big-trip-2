@@ -1,8 +1,8 @@
 import PointsListView from '../view/points-list-view.js';
-import AddNewPointView from '../view/add-new-point-view.js';
+// import AddNewPointView from '../view/add-new-point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
-import { RenderPosition, render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 
 export default class EventsPresenter {
   #pointsList = new PointsListView(); // список для точек маршрута
@@ -28,13 +28,39 @@ export default class EventsPresenter {
     for(let i = 1; i < this.#eventsPoints.length; i++) {
       this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
     }
-
-    render(new EditPointView({point: this.#eventsPoints[0]}, this.#destinations, this.#offers), this.#pointsList.element, RenderPosition.AFTERBEGIN); // вставляем в начало списка форму редактирования точки
-    render(new AddNewPointView(), this.#pointsList.element); // вставляем в список форму добавления новой точки
   }
 
   #renderPoint(point, destinations, offers) {
-    const pointComponent = new PointView({point}, destinations, offers);
+    const escKeyDownHandler = (evt) => {
+      if(evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const onEditClick = () => {
+      replacePointToEdit();
+      document.addEventListener('keydown', escKeyDownHandler);
+    };
+
+    const onCloseClick = () => {
+      replaceEditToPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    const pointComponent = new PointView({point}, destinations, offers, onEditClick);
+
+    const pointEditComponent = new EditPointView({point}, destinations, offers, onCloseClick);
+
+    function replacePointToEdit() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceEditToPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
     render(pointComponent, this.#pointsList.element);
   }
 }
