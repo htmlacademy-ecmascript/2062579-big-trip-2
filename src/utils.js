@@ -6,6 +6,11 @@ const DATE_FORMAT = { // форматы даты в разных блоках
   POINT: 'MMM DD', // в точке маршрута
   EDIT_POINT: 'DD/MM/YY' // в форме редактирования точки
 };
+const TIME_FACTORS = {
+  HOURS_PER_DAY: 24,
+  MINUTES_PER_DAY: 1440,
+  MINUTES_PER_HOUR: 60
+};
 
 const TIME_FORMAT = 'HH:mm';
 
@@ -16,8 +21,8 @@ const getTime = (time) => time ? dayjs(time).format(TIME_FORMAT) : '';
 const getTimeLength = (dateFrom, dateTo) => {
   let result = '';
   const days = dayjs(dateTo).diff(dayjs(dateFrom), 'd');
-  const hours = dayjs(dateTo).diff(dayjs(dateFrom), 'h') % 24;
-  const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'm') % 1440 - hours * 60;
+  const hours = dayjs(dateTo).diff(dayjs(dateFrom), 'h') % TIME_FACTORS.HOURS_PER_DAY;
+  const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'm') % TIME_FACTORS.MINUTES_PER_DAY - hours * TIME_FACTORS.MINUTES_PER_HOUR;
 
   let displayDays = '';
   if(days > 0 && days < 10) {
