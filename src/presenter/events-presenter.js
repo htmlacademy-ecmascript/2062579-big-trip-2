@@ -23,14 +23,10 @@ export default class EventsPresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
-    render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
-
-    for(let i = 0; i < this.#eventsPoints.length; i++) {
-      this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
-    }
+    this.#renderEventsList();
   }
 
-  #renderPoint(point, destinations, offers) {
+  #renderPoint(point, destinations, offers) { // метод отрисовки точки маршрута или формы редактирования этой точки
     const escKeyDownHandler = (evt) => { // обработчик для закрытия по esc
       if(evt.key === 'Escape') {
         evt.preventDefault();
@@ -67,5 +63,13 @@ export default class EventsPresenter {
     }
 
     render(pointComponent, this.#pointsList.element);
+  }
+
+  #renderEventsList() { // метод отрисовки списка точек маршрута
+    render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
+
+    for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
+      this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
+    }
   }
 }
