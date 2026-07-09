@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getDate, getTime, DATE_FORMAT } from '../utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
 
@@ -101,26 +101,36 @@ const createEditpointTemplate = (point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView {
-  constructor({ point }, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+export default class EditPointView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
+  #handleEditClick = null;
+  #handleFormSubmit = null;
+
+  constructor({ point }, destinations, offers, onEditClick, onFormSubmit) {
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
+    this.#handleEditClick = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler); // на кнопку-стрелку вешаем обработчик по клику
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler); // на форму вешаем сабмит
   }
 
-  getTemplate() {
-    return createEditpointTemplate(this.point, this.destinations, this.offers);
-  }
+  #editClickHandler = (evt) => { // обработчик по клику
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 
-  getElement() {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => { // обработчик на сабмит формы
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditpointTemplate(this.#point, this.#destinations, this.#offers);
   }
 }

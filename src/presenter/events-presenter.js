@@ -1,29 +1,75 @@
 import PointsListView from '../view/points-list-view.js';
-import AddNewPointView from '../view/add-new-point-view.js';
+// import AddNewPointView from '../view/add-new-point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
-import { RenderPosition, render } from '../render.js';
+import { render, replace } from '../framework/render.js';
 
 export default class EventsPresenter {
-  pointsList = new PointsListView(); // список для точек маршрута
+  #pointsList = new PointsListView(); // список для точек маршрута
+
+  #pointsListContainer = null;
+  #pointsModel = null;
+  #eventsPoints = [];
+  #destinations = [];
+  #offers = [];
 
   constructor({pointsListContainer, pointsModel}) {
-    this.pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
-    this.pointsModel = pointsModel;
+    this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.eventsPoints = [...this.pointsModel.getPoints()];
-    this.destinations = [...this.pointsModel.getDestinations()];
-    this.offers = [...this.pointsModel.getOffers()];
+    this.#eventsPoints = [...this.#pointsModel.points];
+    this.#destinations = [...this.#pointsModel.destinations];
+    this.#offers = [...this.#pointsModel.offers];
 
-    render(this.pointsList, this.pointsListContainer); // вставляем список в контейнер
+    this.#renderEventsList();
+  }
 
-    for(let i = 1; i < this.eventsPoints.length; i++) {
-      render(new PointView({point: this.eventsPoints[i]}, this.destinations, this.offers), this.pointsList.getElement()); // добавляем в список точки, начиная со второй - индекс [1]
+  #renderPoint(point, destinations, offers) { // метод отрисовки точки маршрута или формы редактирования этой точки
+    const escKeyDownHandler = (evt) => { // обработчик для закрытия по esc
+      if(evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditToPoint(); // замена формы на точку
+        document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
+      }
+    };
+
+    const onEditClick = () => { // обработчик для открытия формы по кнопке-стрелке
+      replacePointToEdit(); // замена точки на форму
+      document.addEventListener('keydown', escKeyDownHandler); // добавление обработчика по esc
+    };
+
+    const onCloseClick = () => { // обработчик для закрытия формы по кнопке-стрелке
+      replaceEditToPoint(); // замена формы на точку
+      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
+    };
+
+    const onFormSubmit = () => { // обработчик для закрытия формы по кнопке save (временно, потом заменю функционал на сабмит формы)
+      replaceEditToPoint(); // замена формы на точку
+      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
+    };
+
+    const pointComponent = new PointView({point}, destinations, offers, onEditClick);
+
+    const pointEditComponent = new EditPointView({point}, destinations, offers, onCloseClick, onFormSubmit);
+
+    function replacePointToEdit() { // функция замены точки на форму редактирования
+      replace(pointEditComponent, pointComponent);
     }
 
-    render(new EditPointView({point: this.eventsPoints[0]}, this.destinations, this.offers), this.pointsList.getElement(), RenderPosition.AFTERBEGIN); // вставляем в начало списка форму редактирования точки
-    render(new AddNewPointView(), this.pointsList.getElement()); // вставляем в список форму добавления новой точки
+    function replaceEditToPoint() { // функция замены формы редактирования на точку
+      replace(pointComponent, pointEditComponent);
+    }
+
+    render(pointComponent, this.#pointsList.element);
+  }
+
+  #renderEventsList() { // метод отрисовки списка точек маршрута
+    render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
+
+    for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
+      this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getDate, getTime, getTimeLength, setFavoriteClass, DATE_FORMAT } from '../utils.js';
 
 const createPointTemplate = (point, destinations, offers) => {
@@ -57,26 +57,28 @@ const createPointTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class PointView {
-  constructor({ point }, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+export default class PointView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
+  #handleEditClick = null;
+
+  constructor({ point }, destinations, offers, onEditClick) {
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler); // на кнопку-стрелку вешаем обработчик по клику
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point, this.destinations, this.offers);
-  }
+  #editClickHandler = (evt) => { // обработчик по клику
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 
-  getElement() {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 }

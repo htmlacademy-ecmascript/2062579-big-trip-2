@@ -6,6 +6,11 @@ const DATE_FORMAT = { // форматы даты в разных блоках
   POINT: 'MMM DD', // в точке маршрута
   EDIT_POINT: 'DD/MM/YY' // в форме редактирования точки
 };
+const TIME_FACTORS = {
+  HOURS_PER_DAY: 24,
+  MINUTES_PER_DAY: 1440,
+  MINUTES_PER_HOUR: 60
+};
 
 const TIME_FORMAT = 'HH:mm';
 
@@ -13,35 +18,36 @@ const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(date
 
 const getTime = (time) => time ? dayjs(time).format(TIME_FORMAT) : '';
 
-// добавить отображение количества дней, если они есть
-
-const getTimeHourLength = (dateFrom, dateTo) => {
+const getTimeLength = (dateFrom, dateTo) => {
   let result = '';
-  const length = dayjs(dateTo).diff(dayjs(dateFrom), 'h');
-  if(length === 0) {
-    return result;
-  } else if(length < 10) {
-    result = `0${length}H`;
-  } else {
-    result = `${length}H`;
+  const days = dayjs(dateTo).diff(dayjs(dateFrom), 'd');
+  const hours = dayjs(dateTo).diff(dayjs(dateFrom), 'h') % TIME_FACTORS.HOURS_PER_DAY;
+  const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'm') % TIME_FACTORS.MINUTES_PER_DAY - hours * TIME_FACTORS.MINUTES_PER_HOUR;
+
+  let displayDays = '';
+  if(days > 0 && days < 10) {
+    displayDays = `0${days}D`;
+  } else if(days >= 10) {
+    displayDays = `${days}D`;
   }
+
+  let displayHours = '';
+  if(hours > 0 && hours < 10) {
+    displayHours = `0${hours}H`;
+  } else if(hours >= 10) {
+    displayHours = `${hours}H`;
+  }
+
+  let displayMinutes = '00M';
+  if(minutes > 0 && minutes < 10) {
+    displayMinutes = `0${minutes}M`;
+  } else if(minutes >= 10) {
+    displayMinutes = `${minutes}M`;
+  }
+
+  result = `${displayDays} ${displayHours} ${displayMinutes}`;
   return result;
 };
-
-const getTimeMinuteLength = (dateFrom, dateTo) => {
-  let result = '00';
-  const length = dayjs(dateTo).diff(dayjs(dateFrom), 'm');
-  const remains = length % 60;
-  if (remains !== 0) {
-    result = `${length % 60}M`;
-  }
-  if(remains < 10) {
-    result = `0${ length % 60}M`;
-  }
-  return result;
-};
-
-const getTimeLength = (dateFrom, dateTo) => `${getTimeHourLength(dateFrom, dateTo)} ${getTimeMinuteLength(dateFrom, dateTo)}`;
 
 const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
 
