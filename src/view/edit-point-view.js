@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDate, getTime, DateFormat } from '../utils.js';
+import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
 
 const createEditpointTemplate = (point, destinations, offers) => {

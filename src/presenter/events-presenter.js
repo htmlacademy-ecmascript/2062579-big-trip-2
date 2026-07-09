@@ -1,5 +1,4 @@
 import PointsListView from '../view/points-list-view.js';
-// import AddNewPointView from '../view/add-new-point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace } from '../framework/render.js';

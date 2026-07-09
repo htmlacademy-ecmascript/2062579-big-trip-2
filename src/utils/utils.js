@@ -13,51 +13,6 @@ const TimeFactors = {
 };
 const TIME_FORMAT = 'HH:mm';
 
-// ******************
-const FilterTypes = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past'
-};
-
-const filter = {
-  [FilterTypes.EVERYTHING]: (points) => points.length > 0,
-  [FilterTypes.FUTURE]: (points) => points.some((point) => isPointFuture(point.dateFrom)),
-  [FilterTypes.PRESENT]: (points) => points.some((point) => isPointPresent(point.dateFrom, point.dateTo)),
-  [FilterTypes.PAST]: (points) => points.some((point) => isPointPast(point.dateTo))
-};
-
-function isPointPast(dateTo) {
-  return dateTo && dayjs().isAfter(dateTo, 'H');
-}
-
-function isPointFuture(dateFrom) {
-  return dateFrom && dayjs().isBefore(dateFrom, 'H');
-}
-
-function isPointPresent(dateFrom, dateTo) {
-  return (dateTo && dayjs().isBefore(dateTo, 'H')) && (dateFrom && dayjs().isAfter(dateFrom, 'H'));
-}
-
-const generateFilter = (points) => Object.entries(filter).map(
-  ([filterType, filterValue]) => ({
-    type: filterType,
-    value: filterValue(points)
-  })
-);
-// ********************
-// ------
-const calculateCosts = (points) => {
-  let sumCosts = 0;
-  for (const point of points) {
-    sumCosts += point.basePrice;
-  }
-  return sumCosts;
-};
-
-// ------
-
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 
 const getTime = (time) => time ? dayjs(time).format(TIME_FORMAT) : '';
@@ -95,4 +50,4 @@ const getTimeLength = (dateFrom, dateTo) => {
 
 const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, DateFormat, generateFilter, calculateCosts };
+export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, DateFormat };
