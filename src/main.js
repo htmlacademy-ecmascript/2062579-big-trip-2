@@ -4,7 +4,9 @@ import SortingView from './view/sorting-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './framework/render.js';
 import PointsModel from './model/points-model.js';
-
+// *****
+import {generateFilter} from './utils.js';
+// *****
 const tripInfoContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
@@ -15,8 +17,12 @@ const eventsPresenter = new EventsPresenter({ // создаем презенте
   pointsModel: pointsModel
 });
 const tripInfo = new TripInfoView({tripInfoContainer: tripInfoContainer});
+// *****
+const filters = generateFilter(pointsModel.points);
 
-render(new FilterView(), filterContainer); // добавляем фильтры
+render(new FilterView({ filters }), filterContainer); // добавляем фильтры
+// render(new FilterView(), filterContainer); // добавляем фильтры
+// *****
 render(new SortingView(), tripEventsContainer); // добавляем сортировку
 
 eventsPresenter.init(); // добавляем презентер с маршрутом

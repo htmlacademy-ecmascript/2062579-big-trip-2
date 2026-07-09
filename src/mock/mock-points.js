@@ -68,7 +68,7 @@ const mockPoints = [
   {
     id: 'weweff-4682',
     basePrice: getRandomArrayElement(mockPrices),
-    dateFrom: '2026-07-10T15:00:33.444Z',
+    dateFrom: '2026-07-08T15:00:33.444Z',
     dateTo: '2026-07-10T18:00:35.555Z',
     destination: 'egaflk-6797',
     isFavorite: true,
@@ -139,8 +139,8 @@ const mockPoints = [
   {
     id: 'jhklkl-5552',
     basePrice: getRandomArrayElement(mockPrices),
-    dateFrom: '2026-07-10T09:10:33.444Z',
-    dateTo: '2026-07-10T09:37:35.666Z',
+    dateFrom: '2026-07-09T09:10:33.444Z',
+    dateTo: '2026-07-10T21:37:35.666Z',
     destination: 'ljuccr-6492',
     isFavorite: true,
     offers: [],

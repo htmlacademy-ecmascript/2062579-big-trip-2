@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDate, getTime, getTimeLength, setFavoriteClass, DATE_FORMAT } from '../utils.js';
+import { getDate, getTime, getTimeLength, setFavoriteClass, DateFormat } from '../utils.js';
 
 const createPointTemplate = (point, destinations, offers) => {
   const {basePrice, dateFrom, dateTo, isFavorite, type } = point;
@@ -7,7 +7,7 @@ const createPointTemplate = (point, destinations, offers) => {
   const typeOffers = offers.find((offer) => offer.type === point.type).offers; // находим в офферах совпадающие по типу с указанным в точке маршрута
   const selectedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id)); // находим в списке офферов данного типа, выбранные в точке маршрута
 
-  const date = getDate(dateFrom, DATE_FORMAT.POINT);
+  const date = getDate(dateFrom, DateFormat.POINT);
   const startTime = getTime(dateFrom);
   const endTime = getTime(dateTo);
   const timeLength = getTimeLength(dateFrom, dateTo);
