@@ -47,6 +47,16 @@ const generateFilter = (points) => Object.entries(filter).map(
   })
 );
 // ********************
+// ------
+const calculateCosts = (points) => {
+  let sumCosts = 0;
+  for (const point of points) {
+    sumCosts += point.basePrice;
+  }
+  return sumCosts;
+};
+
+// ------
 
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 
@@ -85,4 +95,4 @@ const getTimeLength = (dateFrom, dateTo) => {
 
 const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, DateFormat, generateFilter };
+export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, DateFormat, generateFilter, calculateCosts };

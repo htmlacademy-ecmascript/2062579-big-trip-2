@@ -5,7 +5,7 @@ import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './framework/render.js';
 import PointsModel from './model/points-model.js';
 // *****
-import {generateFilter} from './utils.js';
+import {generateFilter, calculateCosts} from './utils.js';
 // *****
 const tripInfoContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
@@ -16,7 +16,13 @@ const eventsPresenter = new EventsPresenter({ // создаем презенте
   pointsListContainer: tripEventsContainer,
   pointsModel: pointsModel
 });
-const tripInfo = new TripInfoView({tripInfoContainer: tripInfoContainer});
+// -----
+const tripCosts = calculateCosts(pointsModel.points);
+const tripInfo = new TripInfoView({
+  tripInfoContainer: tripInfoContainer,
+  tripCosts: tripCosts
+});
+// -----
 // *****
 const filters = generateFilter(pointsModel.points);
 

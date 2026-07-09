@@ -6,9 +6,11 @@ import TripInfoCostView from '../view/trip-info-cost-view.js';
 export default class TripInfoView {
   #infoSection = new TripInfoSectionView();
   #tripInfoContainer = null;
+  #tripCosts = null;
 
-  constructor({tripInfoContainer}) {
+  constructor({tripInfoContainer, tripCosts}) {
     this.#tripInfoContainer = tripInfoContainer; // получаем контейнер, в который будет вставлен блок Инфо
+    this.#tripCosts = tripCosts; // получаем общую стоимость
   }
 
   init() {
@@ -16,6 +18,6 @@ export default class TripInfoView {
 
     render(new TripInfoMainView(), this.#infoSection.element, RenderPosition.AFTERBEGIN); // вставляем основные данные из инфо в начало секции
 
-    render(new TripInfoCostView(), this.#infoSection.element); // вставляем стоимость из инфо
+    render(new TripInfoCostView(this.#tripCosts), this.#infoSection.element); // вставляем стоимость из инфо
   }
 }
