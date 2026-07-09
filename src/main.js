@@ -1,6 +1,5 @@
 import TripInfoView from './presenter/trip-info-presenter.js';
 import FilterView from './view/filter-view.js';
-import SortingView from './view/sorting-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './framework/render.js';
 import PointsModel from './model/points-model.js';
@@ -28,8 +27,6 @@ const tripInfo = new TripInfoView({
 const filters = generateFilter(pointsModel.points);
 
 render(new FilterView({ filters }), filterContainer); // добавляем фильтры
-
-render(new SortingView(), tripEventsContainer); // добавляем сортировку
 
 eventsPresenter.init(); // добавляем презентер с маршрутом
 tripInfo.init(); // добавляем информацию о маршруте
