@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDate, getTime, DATE_FORMAT } from '../utils.js';
+import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
 
 const createEditpointTemplate = (point, destinations, offers) => {
@@ -8,12 +8,12 @@ const createEditpointTemplate = (point, destinations, offers) => {
   const typeOffers = offers.find((offer) => offer.type === point.type).offers; // находим в офферах совпадающие по типу с указанным в точке маршрута
   const selectedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id)); // находим в списке офферов данного типа, выбранные в точке маршрута
 
-  const date = getDate(dateFrom, DATE_FORMAT.EDIT_POINT);
+  const date = getDate(dateFrom, DateFormat.EDIT_POINT);
   const startTime = getTime(dateFrom);
   const endTime = getTime(dateTo);
 
   return `<li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+    <form class="event event--edit" action="#" method="post" autocomplete="off">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">

@@ -1,8 +1,9 @@
 import PointsListView from '../view/points-list-view.js';
-// import AddNewPointView from '../view/add-new-point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
-import { render, replace } from '../framework/render.js';
+import NoPointView from '../view/no-point-view.js';
+import SortingView from '../view/sorting-view.js';
+import { RenderPosition, render, replace } from '../framework/render.js';
 
 export default class EventsPresenter {
   #pointsList = new PointsListView(); // список для точек маршрута
@@ -65,11 +66,15 @@ export default class EventsPresenter {
     render(pointComponent, this.#pointsList.element);
   }
 
-  #renderEventsList() { // метод отрисовки списка точек маршрута
+  #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
     render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
-
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
       this.#renderPoint(this.#eventsPoints[i], this.#destinations, this.#offers);
+    }
+    if(this.#pointsList.element.children.length === 0) { // проверка наличия точек маршрута
+      render(new NoPointView(), this.#pointsListContainer); // если их нет, рендерим заглушку
+    } else {
+      render(new SortingView(), this.#pointsListContainer, RenderPosition.AFTERBEGIN); // если тояки есть, добавляем сортировку
     }
   }
 }

@@ -1,9 +1,10 @@
 import TripInfoView from './presenter/trip-info-presenter.js';
 import FilterView from './view/filter-view.js';
-import SortingView from './view/sorting-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './framework/render.js';
 import PointsModel from './model/points-model.js';
+import { createTripInfoDestinationeNames, calculateCosts } from './utils/trip-info.js';
+import { generateFilter } from './utils/filter.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
@@ -14,10 +15,18 @@ const eventsPresenter = new EventsPresenter({ // создаем презенте
   pointsListContainer: tripEventsContainer,
   pointsModel: pointsModel
 });
-const tripInfo = new TripInfoView({tripInfoContainer: tripInfoContainer});
 
-render(new FilterView(), filterContainer); // добавляем фильтры
-render(new SortingView(), tripEventsContainer); // добавляем сортировку
+const tripInfoDestinationeNames = createTripInfoDestinationeNames(pointsModel);
+const tripCosts = calculateCosts(pointsModel.points);
+const tripInfo = new TripInfoView({
+  tripInfoContainer: tripInfoContainer,
+  tripCosts: tripCosts,
+  tripInfoDestinationeNames: tripInfoDestinationeNames
+});
+
+const filters = generateFilter(pointsModel.points);
+
+render(new FilterView({ filters }), filterContainer); // добавляем фильтры
 
 eventsPresenter.init(); // добавляем презентер с маршрутом
 tripInfo.init(); // добавляем информацию о маршруте
