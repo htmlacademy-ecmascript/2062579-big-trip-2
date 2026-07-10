@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 
 const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
+const TIME_FORMAT = 'HH:mm';
 const DateFormat = { // форматы даты в разных блоках
   POINT: 'MMM DD', // в точке маршрута
   EDIT_POINT: 'DD/MM/YY' // в форме редактирования точки
@@ -11,7 +12,6 @@ const TimeFactors = {
   MINUTES_PER_DAY: 1440,
   MINUTES_PER_HOUR: 60
 };
-const TIME_FORMAT = 'HH:mm';
 
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 

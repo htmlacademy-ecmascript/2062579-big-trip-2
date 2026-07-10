@@ -66,7 +66,6 @@ export default class EventsPresenter {
     render(pointComponent, this.#pointsList.element);
   }
 
-
   #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
     render(this.#pointsList, this.#pointsListContainer); // вставляем список в контейнер
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута

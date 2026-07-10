@@ -17,7 +17,7 @@ const createTripInfoDestinationeNames = (pointsModelData) => {
   if(destinationNames.length < 4) {
     return destinationNames.join(' — ');
   } else {
-    const tripInfoDestsShort = ['', '...', ''];
+    const tripInfoDestsShort = ['', ' . . . ', ''];
     tripInfoDestsShort[0] = destinationNames[0];
     tripInfoDestsShort[2] = destinationNames[destinationNames.length - 1];
     return tripInfoDestsShort.join(' — ') ;
