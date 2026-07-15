@@ -1,6 +1,6 @@
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
-import { render, replace } from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 
 export default class PointPresenter {
   #pointsList = null;
@@ -67,19 +67,38 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#pointEditComponent);
   }
 
-  /**
-   * метод рендеринга точки или формы редактирования этой точки
-   */
-  #renderPoint() {
+  init() {
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
+
     this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onEditClick);
 
     this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
 
-    render(this.#pointComponent, this.#pointsList.element);
+    if(prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointComponent, this.#pointsList.element);
+      return;
+    }
+
+    if(this.#pointsList.element.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if(this.#pointsList.element.contains(prevPointEditComponent.element)) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+
   }
 
-  init() {
-    this.#renderPoint();
+  /**
+   * метод удаления точки маршрута
+   */
+  #destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 }
 
