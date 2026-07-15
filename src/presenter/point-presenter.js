@@ -2,19 +2,27 @@ import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class PointPresenter {
   #pointsList = null;
   #point = null;
   #destinations = [];
   #offers = [];
   #handleDataChange = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(point, destinations, offers, onDataChange, pointsList) {
+  constructor(point, destinations, offers, onDataChange, onModeChange, pointsList) {
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#pointsList = pointsList;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   #pointComponent = null;
@@ -67,6 +75,9 @@ export default class PointPresenter {
    */
   #replacePointToEdit() {
     replace(this.#pointEditComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   /**
@@ -74,6 +85,17 @@ export default class PointPresenter {
    */
   #replaceEditToPoint() {
     replace(this.#pointComponent, this.#pointEditComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  /**
+   * метод закрытия карточки, открытой в режиме редактирования
+   */
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditToPoint();
+    }
   }
 
   init(point) {
@@ -101,13 +123,13 @@ export default class PointPresenter {
     }
 
     /**
-     * проверка наличия элементов в DOM
-     * если есть - заменяем
+     * проверка открытия карточки в режиме просмотра или редактирования
+     * если в режиме просмотра - заменяем на редактирование, и наоборот
      */
-    if(this.#pointsList.element.contains(prevPointComponent.element)) {
+    if(this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
-    if(this.#pointsList.element.contains(prevPointEditComponent.element)) {
+    if(this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 

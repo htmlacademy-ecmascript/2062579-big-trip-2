@@ -50,13 +50,28 @@ export default class EventsPresenter {
   }
 
   /**
+   * метод обновления данных при ручном изменении пользователем
+   */
+  #handlePointChange = (changedPoint) => {
+    this.#eventsPoints = updateItem(this.#eventsPoints, changedPoint);
+    this.#pointPresenters.get(changedPoint.id).init(changedPoint);
+  };
+
+  /**
+   *
+   */
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  /**
    * метод рендеринга списка точек
    */
   #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
     this.#renderPointList(); // вставляем список в контейнер
 
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
-      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#pointsList);
+      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
       pointPresenter.init(this.#eventsPoints[i]);
       this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
     }
@@ -67,12 +82,4 @@ export default class EventsPresenter {
       this.#renderSorting(); // если точки есть, добавляем сортировку
     }
   }
-
-  /**
-   * метод обновления данных при ручном изменении пользователем
-   */
-  #handlePointChange = (changedPoint) => {
-    this.#eventsPoints = updateItem(this.#eventsPoints, changedPoint);
-    this.#pointPresenters.get(changedPoint.id).init(changedPoint);
-  };
 }
