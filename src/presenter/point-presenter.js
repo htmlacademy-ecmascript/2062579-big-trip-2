@@ -68,26 +68,42 @@ export default class PointPresenter {
   }
 
   init() {
+    /**
+     * создаем экземпляры предыдущих компонентов
+     */
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
+    /**
+     * инициализируем новые элементы
+     */
     this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onEditClick);
 
     this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
 
+    /**
+     * проверка, были уже ранее созданы точки или нет (=== null)
+     * если нет - рендерим точки
+     */
     if(prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointsList.element);
       return;
     }
 
+    /**
+     * проверка наличия элементов в DOM
+     * если есть - заменяем
+     */
     if(this.#pointsList.element.contains(prevPointComponent.element)) {
       replace(this.#pointComponent, prevPointComponent);
     }
-
     if(this.#pointsList.element.contains(prevPointEditComponent.element)) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
+    /**
+     * удаляем экземпляры предыдущих элементов
+     */
     remove(prevPointComponent);
     remove(prevPointEditComponent);
 
