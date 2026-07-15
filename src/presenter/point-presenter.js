@@ -7,12 +7,14 @@ export default class PointPresenter {
   #point = null;
   #destinations = [];
   #offers = [];
+  #handleDataChange = null;
 
-  constructor(point, destinations, offers, pointsList) {
+  constructor(point, destinations, offers, onDataChange, pointsList) {
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#pointsList = pointsList;
+    this.#handleDataChange = onDataChange;
   }
 
   #pointComponent = null;
@@ -54,6 +56,13 @@ export default class PointPresenter {
   };
 
   /**
+   * метод для клика по кнопке избранного
+   */
+  #onFavoriteClick = () => {
+    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  /**
    * метод замены точки на форму редактирования
    */
   #replacePointToEdit() {
@@ -67,7 +76,8 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#pointEditComponent);
   }
 
-  init() {
+  init(point) {
+    this.#point = point;
     /**
      * создаем экземпляры предыдущих компонентов
      */
@@ -77,7 +87,7 @@ export default class PointPresenter {
     /**
      * инициализируем новые элементы
      */
-    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onEditClick);
+    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onFavoriteClick, this.#onEditClick);
 
     this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
 

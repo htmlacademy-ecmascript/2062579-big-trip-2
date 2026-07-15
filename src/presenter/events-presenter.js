@@ -3,6 +3,7 @@ import NoPointView from '../view/no-point-view.js';
 import SortingView from '../view/sorting-view.js';
 import { RenderPosition, render } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
+import { updateItem } from '../utils/utils.js';
 
 export default class EventsPresenter {
   #pointsList = new PointsListView(); // список для точек маршрута
@@ -55,8 +56,8 @@ export default class EventsPresenter {
     this.#renderPointList(); // вставляем список в контейнер
 
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
-      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#pointsList);
-      pointPresenter.init();
+      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#pointsList);
+      pointPresenter.init(this.#eventsPoints[i]);
       this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
     }
 
@@ -66,4 +67,12 @@ export default class EventsPresenter {
       this.#renderSorting(); // если точки есть, добавляем сортировку
     }
   }
+
+  /**
+   * метод обновления данных при ручном изменении пользователем
+   */
+  #handlePointChange = (changedPoint) => {
+    this.#eventsPoints = updateItem(this.#eventsPoints, changedPoint);
+    this.#pointPresenters.get(changedPoint.id).init(changedPoint);
+  };
 }

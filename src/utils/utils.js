@@ -48,6 +48,19 @@ const getTimeLength = (dateFrom, dateTo) => {
   return result;
 };
 
+/**
+ * функция установки класса для добавленных в избранное
+ * @param {boolean} data - из данных точки, ключ isFavorite
+ * @returns класс (строку) 'event__favorite-btn--active' или пустую строку
+ */
 const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, DateFormat };
+/**
+ * функция обновления данных точки
+ * @param {*} items
+ * @param {*} update
+ * @returns обновленную точку или текущие данные
+ */
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, DateFormat };
