@@ -15,46 +15,67 @@ export default class PointPresenter {
     this.#pointsList = pointsList;
   }
 
+  #pointComponent = null;
+  #pointEditComponent = null;
+
   /**
-   * метод рендеринга точки
+   * метод  для закрытия по esc
    */
-  #renderPoint() { // метод отрисовки точки маршрута или формы редактирования этой точки
-    const escKeyDownHandler = (evt) => { // обработчик для закрытия по esc
-      if(evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceEditToPoint(); // замена формы на точку
-        document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
-      }
-    };
-
-    const onEditClick = () => { // обработчик для открытия формы по кнопке-стрелке
-      replacePointToEdit(); // замена точки на форму
-      document.addEventListener('keydown', escKeyDownHandler); // добавление обработчика по esc
-    };
-
-    const onCloseClick = () => { // обработчик для закрытия формы по кнопке-стрелке
-      replaceEditToPoint(); // замена формы на точку
-      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
-    };
-
-    const onFormSubmit = () => { // обработчик для закрытия формы по кнопке save (временно, потом заменю функционал на сабмит формы)
-      replaceEditToPoint(); // замена формы на точку
-      document.removeEventListener('keydown', escKeyDownHandler); // удаление обработчика по esc
-    };
-
-    const pointComponent = new PointView(this.#point, this.#destinations, this.#offers, onEditClick);
-
-    const pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, onCloseClick, onFormSubmit);
-
-    function replacePointToEdit() { // функция замены точки на форму редактирования
-      replace(pointEditComponent, pointComponent);
+  #escKeyDownHandler = (evt) => {
+    if(evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceEditToPoint(); // замена формы на точку
+      document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
     }
+  };
 
-    function replaceEditToPoint() { // функция замены формы редактирования на точку
-      replace(pointComponent, pointEditComponent);
-    }
+  /**
+   * метод для открытия формы по кнопке-стрелке
+   */
+  #onEditClick = () => {
+    this.#replacePointToEdit(); // замена точки на форму
+    document.addEventListener('keydown', this.#escKeyDownHandler); // добавление обработчика по esc
+  };
 
-    render(pointComponent, this.#pointsList.element);
+  /**
+   * метод для закрытия формы по кнопке-стрелке
+   */
+  #onCloseClick = () => {
+    this.#replaceEditToPoint(); // замена формы на точку
+    document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
+  };
+
+  /**
+   * метод для закрытия формы по кнопке save (временно, потом заменю функционал на сабмит формы)
+   */
+  #onFormSubmit = () => {
+    this.#replaceEditToPoint(); // замена формы на точку
+    document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
+  };
+
+  /**
+   * метод замены точки на форму редактирования
+   */
+  #replacePointToEdit() {
+    replace(this.#pointEditComponent, this.#pointComponent);
+  }
+
+  /**
+   * метод замены формы редактирования на точку
+   */
+  #replaceEditToPoint() {
+    replace(this.#pointComponent, this.#pointEditComponent);
+  }
+
+  /**
+   * метод рендеринга точки или формы редактирования этой точки
+   */
+  #renderPoint() {
+    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onEditClick);
+
+    this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
+
+    render(this.#pointComponent, this.#pointsList.element);
   }
 
   init() {
