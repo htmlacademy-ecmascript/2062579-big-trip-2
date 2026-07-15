@@ -12,6 +12,7 @@ export default class EventsPresenter {
   #eventsPoints = [];
   #destinations = [];
   #offers = [];
+  #pointPresenters = new Map(); // коллекция с точками маршрута
 
   constructor({pointsListContainer, pointsModel}) {
     this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
@@ -56,6 +57,7 @@ export default class EventsPresenter {
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
       const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#pointsList);
       pointPresenter.init();
+      this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
     }
 
     if(this.#pointsList.element.children.length === 0) { // проверка наличия точек маршрута
