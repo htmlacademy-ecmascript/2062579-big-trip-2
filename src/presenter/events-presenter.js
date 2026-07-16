@@ -14,6 +14,7 @@ export default class EventsPresenter {
   #destinations = [];
   #offers = [];
   #pointPresenters = new Map(); // коллекция с точками маршрута
+  #sortComponent = null;
 
   constructor({pointsListContainer, pointsModel}) {
     this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
@@ -42,11 +43,20 @@ export default class EventsPresenter {
     render(new NoPointView(), this.#pointsListContainer);
   }
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+  };
+
   /**
    * метод рендеринга сортировки
    */
   #renderSorting() {
-    render(new SortingView(), this.#pointsListContainer, RenderPosition.AFTERBEGIN);
+    this.#sortComponent = new SortingView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+    render(this.#sortComponent, this.#pointsListContainer, RenderPosition.AFTERBEGIN);
   }
 
   /**

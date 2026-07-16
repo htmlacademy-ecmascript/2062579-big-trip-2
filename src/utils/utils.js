@@ -12,6 +12,13 @@ const TimeFactors = {
   MINUTES_PER_DAY: 1440,
   MINUTES_PER_HOUR: 60
 };
+const SortingTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer'
+};
 
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 
@@ -63,4 +70,4 @@ const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
  */
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, DateFormat };
+export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, DateFormat, SortingTypes };
