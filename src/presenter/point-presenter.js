@@ -144,7 +144,7 @@ export default class PointPresenter {
   /**
    * метод удаления точки маршрута
    */
-  #destroy() {
+  destroy() {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   }
