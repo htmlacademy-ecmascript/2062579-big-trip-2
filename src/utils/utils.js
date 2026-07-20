@@ -20,6 +20,13 @@ const SortingTypes = {
   OFFER: 'offer'
 };
 
+/**
+ * функция проверки нажатия клавиши Escape
+ * @param {*} evt
+ * @returns true/false
+ */
+const isEscapeDown = (evt) => evt.key === 'Escape';
+
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 
 const getTime = (time) => time ? dayjs(time).format(TIME_FORMAT) : '';
@@ -122,4 +129,4 @@ const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
  */
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, sortPrice, sortDay, sortTime, DateFormat, SortingTypes };
+export { isEscapeDown, getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, sortPrice, sortDay, sortTime, DateFormat, SortingTypes };

@@ -1,6 +1,7 @@
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
+import { isEscapeDown } from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -75,7 +76,7 @@ export default class PointPresenter {
    * метод  для закрытия по esc
    */
   #escKeyDownHandler = (evt) => {
-    if(evt.key === 'Escape') {
+    if(isEscapeDown) {
       evt.preventDefault();
       this.#replaceEditToPoint(); // замена формы на точку
       document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
