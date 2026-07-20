@@ -29,7 +29,7 @@ export default class SortingView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if(evt.target.classList.contains('trip-sort__input')) {
+    if(evt.target.classList.contains('trip-sort__input')) { // проверка, что кликнули именно по чекбоксу
       this.#handleSortTypeChange(evt.target.dataset.sortType);
     }
   };
