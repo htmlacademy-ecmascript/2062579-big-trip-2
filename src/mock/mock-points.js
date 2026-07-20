@@ -148,6 +148,23 @@ const mockPoints = [
   }
 ];
 
-const getRandomPoint = () => getRandomArrayElement(mockPoints);
+/**
+ * функция генерации уникальных случайных точек из всего набора
+ */
+const getUnicRandomPoints = () => {
+  const unicRandomIds = [];
+  return function () {
+    let newPoint = getRandomArrayElement(mockPoints);
 
-export { POINT_TYPES, getRandomPoint };
+    if (unicRandomIds.length >= (mockPoints.length)) {
+      return null;
+    }
+    while (unicRandomIds.includes(newPoint)) {
+      newPoint = getRandomArrayElement(mockPoints);
+    }
+    unicRandomIds.push(newPoint);
+    return newPoint;
+  };
+};
+
+export { POINT_TYPES, getUnicRandomPoints };

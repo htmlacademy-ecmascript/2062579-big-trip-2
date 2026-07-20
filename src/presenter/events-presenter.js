@@ -3,7 +3,7 @@ import NoPointView from '../view/no-point-view.js';
 import SortingView from '../view/sorting-view.js';
 import { RenderPosition, render } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
-import { updateItem } from '../utils/utils.js';
+import { updateItem, SortingTypes, sortPrice, sortDay, sortTime } from '../utils/utils.js';
 
 export default class EventsPresenter {
   #pointsList = new PointsListView(); // список для точек маршрута
@@ -14,6 +14,9 @@ export default class EventsPresenter {
   #destinations = [];
   #offers = [];
   #pointPresenters = new Map(); // коллекция с точками маршрута
+  #sortComponent = null;
+  #currentSortType = SortingTypes.DAY;
+  // #sourcedEventsPoints = []; // копия изначального набора данных. Нужна?
 
   constructor({pointsListContainer, pointsModel}) {
     this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
@@ -24,6 +27,10 @@ export default class EventsPresenter {
     this.#eventsPoints = [...this.#pointsModel.points];
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
+    /**
+     * сохраненный исходный массив точек. Нужен?
+     */
+    // this.#sourcedEventsPoints = [...this.#pointsModel.points];
 
     this.#renderEventsList();
   }
@@ -43,10 +50,52 @@ export default class EventsPresenter {
   }
 
   /**
+   * метод сортировки точек
+   * @param {*} sortType
+   */
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortingTypes.DAY:
+        this.#eventsPoints.sort(sortDay);
+        break;
+      case SortingTypes.TIME:
+        this.#eventsPoints.sort(sortTime);
+        break;
+      case SortingTypes.PRICE:
+        this.#eventsPoints.sort(sortPrice);
+        break;
+      // default: // нужно ли значение по-умолчанию?
+        // this.#eventsPoints = [...this.#sourcedEventsPoints];
+    }
+
+    this.#currentSortType = sortType;
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) { // проверяем какой тип сортировки выбран сейчас, если совпадает с выбранным - не перерисовываем список
+      return;
+    }
+    this.#sortPoints(sortType); // - Сортируем задачи
+    this.#clearPointsList(); // - Очищаем список
+    this.#renderPoints();
+  };
+
+  /**
+   * метод очистки списка точек
+   */
+  #clearPointsList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+  }
+
+  /**
    * метод рендеринга сортировки
    */
   #renderSorting() {
-    render(new SortingView(), this.#pointsListContainer, RenderPosition.AFTERBEGIN);
+    this.#sortComponent = new SortingView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+    render(this.#sortComponent, this.#pointsListContainer, RenderPosition.AFTERBEGIN);
   }
 
   /**
@@ -54,15 +103,27 @@ export default class EventsPresenter {
    */
   #handlePointChange = (changedPoint) => {
     this.#eventsPoints = updateItem(this.#eventsPoints, changedPoint);
+    // this.#sourcedEventsPoints = updateItem(this.#eventsPoints, changedPoint); // сохраненный тоже обновляем
     this.#pointPresenters.get(changedPoint.id).init(changedPoint);
   };
 
   /**
-   *
+   * метод закрытия карточек в режиме редактирования (чтобы была открыта только одна)
    */
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
+
+  /**
+   * метод отрисовки точек маршрута
+   */
+  #renderPoints() {
+    for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
+      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
+      pointPresenter.init(this.#eventsPoints[i]);
+      this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
+    }
+  }
 
   /**
    * метод рендеринга списка точек
@@ -70,11 +131,8 @@ export default class EventsPresenter {
   #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
     this.#renderPointList(); // вставляем список в контейнер
 
-    for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
-      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
-      pointPresenter.init(this.#eventsPoints[i]);
-      this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
-    }
+    this.#sortPoints(SortingTypes.DAY); // сортируем задачи по датам
+    this.#renderPoints();
 
     if(this.#pointsList.element.children.length === 0) { // проверка наличия точек маршрута
       this.#renderNoPoint(); // если их нет, рендерим заглушку

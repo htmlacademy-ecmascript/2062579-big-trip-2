@@ -12,6 +12,20 @@ const TimeFactors = {
   MINUTES_PER_DAY: 1440,
   MINUTES_PER_HOUR: 60
 };
+const SortingTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer'
+};
+
+/**
+ * функция проверки нажатия клавиши Escape
+ * @param {*} evt
+ * @returns true/false
+ */
+const isEscapeDown = (evt) => evt.key === 'Escape';
 
 const getDate = (dateFrom, dateFormat) => dateFrom ? dayjs(dateFrom).format(dateFormat) : '';
 
@@ -49,6 +63,58 @@ const getTimeLength = (dateFrom, dateTo) => {
 };
 
 /**
+ * базовая функция для сортировки
+ */
+const getWeightForNullDate = (paramA, paramB) => {
+  if (paramA === null && paramB === null) {
+    return 0;
+  }
+
+  if (paramA === null) {
+    return 1;
+  }
+
+  if (paramB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+/**
+ * функция для сортировки по цене (от дороже к дешевле)
+ */
+const sortPrice = (pointB, pointA) => {
+  const weight = getWeightForNullDate(pointA.basePrice, pointB.basePrice);
+
+  return weight ?? pointA.basePrice - pointB.basePrice;
+};
+
+/**
+ * функция для сортировки по дате (от ранней к поздней)
+ * @param {*} pointA
+ * @param {*} pointB
+ * @returns
+ */
+const sortDay = (pointA, pointB) => {
+  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+
+  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+};
+
+/**
+ * функция для сортировки по длительности времени (от более длительной к менее)
+ * @param {*} pointA
+ * @param {*} pointB
+ * @returns
+ */
+const sortTime = (pointB, pointA) => {
+  const weight = getWeightForNullDate(dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)), dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)));
+
+  return weight ?? dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)) - dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
+};
+
+/**
  * функция установки класса для добавленных в избранное
  * @param {boolean} data - из данных точки, ключ isFavorite
  * @returns класс (строку) 'event__favorite-btn--active' или пустую строку
@@ -63,4 +129,4 @@ const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
  */
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
-export { getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, DateFormat };
+export { isEscapeDown, getRandomArrayElement, getDate, getTime, getTimeLength, setFavoriteClass, updateItem, sortPrice, sortDay, sortTime, DateFormat, SortingTypes };

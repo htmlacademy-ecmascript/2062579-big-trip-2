@@ -1,6 +1,7 @@
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
+import { isEscapeDown } from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -28,11 +29,54 @@ export default class PointPresenter {
   #pointComponent = null;
   #pointEditComponent = null;
 
+  init(point) {
+    this.#point = point;
+    /**
+     * создаем экземпляры предыдущих компонентов
+     */
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
+
+    /**
+     * инициализируем новые элементы
+     */
+    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onFavoriteClick, this.#onEditClick);
+
+    this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
+
+    /**
+     * проверка, были уже ранее созданы точки или нет (=== null)
+     * если нет - рендерим точки
+     */
+    if(prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointComponent, this.#pointsList.element);
+      return;
+    }
+
+    /**
+     * проверка открытия карточки в режиме просмотра или редактирования
+     * если в режиме просмотра - заменяем на редактирование, и наоборот
+     */
+    if(this.#mode === Mode.DEFAULT) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+    if(this.#mode === Mode.EDITING) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    /**
+     * удаляем экземпляры предыдущих элементов
+     */
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+
+  }
+
   /**
    * метод  для закрытия по esc
    */
   #escKeyDownHandler = (evt) => {
-    if(evt.key === 'Escape') {
+    if(isEscapeDown) {
       evt.preventDefault();
       this.#replaceEditToPoint(); // замена формы на точку
       document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
@@ -98,53 +142,10 @@ export default class PointPresenter {
     }
   }
 
-  init(point) {
-    this.#point = point;
-    /**
-     * создаем экземпляры предыдущих компонентов
-     */
-    const prevPointComponent = this.#pointComponent;
-    const prevPointEditComponent = this.#pointEditComponent;
-
-    /**
-     * инициализируем новые элементы
-     */
-    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onFavoriteClick, this.#onEditClick);
-
-    this.#pointEditComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onCloseClick, this.#onFormSubmit);
-
-    /**
-     * проверка, были уже ранее созданы точки или нет (=== null)
-     * если нет - рендерим точки
-     */
-    if(prevPointComponent === null || prevPointEditComponent === null) {
-      render(this.#pointComponent, this.#pointsList.element);
-      return;
-    }
-
-    /**
-     * проверка открытия карточки в режиме просмотра или редактирования
-     * если в режиме просмотра - заменяем на редактирование, и наоборот
-     */
-    if(this.#mode === Mode.DEFAULT) {
-      replace(this.#pointComponent, prevPointComponent);
-    }
-    if(this.#mode === Mode.EDITING) {
-      replace(this.#pointEditComponent, prevPointEditComponent);
-    }
-
-    /**
-     * удаляем экземпляры предыдущих элементов
-     */
-    remove(prevPointComponent);
-    remove(prevPointEditComponent);
-
-  }
-
   /**
    * метод удаления точки маршрута
    */
-  #destroy() {
+  destroy() {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   }
