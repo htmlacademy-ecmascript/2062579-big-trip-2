@@ -82,16 +82,16 @@ const getWeightForNullDate = (paramA, paramB) => {
 };
 
 /**
- * функция для сортировки по цене
+ * функция для сортировки по цене (от дороже к дешевле)
  */
-const sortPrice = (pointA, pointB) => {
+const sortPrice = (pointB, pointA) => {
   const weight = getWeightForNullDate(pointA.basePrice, pointB.basePrice);
 
   return weight ?? pointA.basePrice - pointB.basePrice;
 };
 
 /**
- * функция для сортировки по дате
+ * функция для сортировки по дате (от ранней к поздней)
  * @param {*} pointA
  * @param {*} pointB
  * @returns
@@ -103,15 +103,15 @@ const sortDay = (pointA, pointB) => {
 };
 
 /**
- * функция для сортировки по времени
+ * функция для сортировки по длительности времени (от более длительной к менее)
  * @param {*} pointA
  * @param {*} pointB
  * @returns
  */
-const sortTime = (pointA, pointB) => {
-  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+const sortTime = (pointB, pointA) => {
+  const weight = getWeightForNullDate(dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)), dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)));
 
-  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+  return weight ?? dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)) - dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
 };
 
 /**

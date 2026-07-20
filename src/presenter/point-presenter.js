@@ -142,7 +142,6 @@ export default class PointPresenter {
     }
   }
 
-
   /**
    * метод удаления точки маршрута
    */
