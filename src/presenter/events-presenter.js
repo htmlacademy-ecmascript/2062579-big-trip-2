@@ -72,7 +72,7 @@ export default class EventsPresenter {
   }
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) { // проверяем какой тип сортировки выбран сейчас
+    if (this.#currentSortType === sortType) { // проверяем какой тип сортировки выбран сейчас, если совпадает с выбранным - не перерисовываем список
       return;
     }
     this.#sortPoints(sortType); // - Сортируем задачи
