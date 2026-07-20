@@ -16,7 +16,7 @@ export default class EventsPresenter {
   #pointPresenters = new Map(); // коллекция с точками маршрута
   #sortComponent = null;
   #currentSortType = SortingTypes.DAY;
-  // #sourcedEventsPoints = []; // копия изначального набора данных
+  // #sourcedEventsPoints = []; // копия изначального набора данных. Нужна?
 
   constructor({pointsListContainer, pointsModel}) {
     this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
@@ -28,7 +28,7 @@ export default class EventsPresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
     /**
-     * сохраненный исходный массив точек
+     * сохраненный исходный массив точек. Нужен?
      */
     // this.#sourcedEventsPoints = [...this.#pointsModel.points];
 
@@ -50,7 +50,7 @@ export default class EventsPresenter {
   }
 
   /**
-   * ИЗМЕНИТЬ !!!
+   * метод сортировки точек
    * @param {*} sortType
    */
   #sortPoints(sortType) {
@@ -77,11 +77,7 @@ export default class EventsPresenter {
     }
     this.#sortPoints(sortType); // - Сортируем задачи
     this.#clearPointsList(); // - Очищаем список
-    for(let i = 0; i < this.#eventsPoints.length; i++) { // - Рендерим список заново
-      const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
-      pointPresenter.init(this.#eventsPoints[i]);
-      this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
-    }
+    this.#renderPoints();
   };
 
   /**
@@ -119,16 +115,24 @@ export default class EventsPresenter {
   };
 
   /**
-   * метод рендеринга списка точек
+   * метод отрисовки точек маршрута
    */
-  #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
-    this.#renderPointList(); // вставляем список в контейнер
-
+  #renderPoints() {
     for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
       const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
       pointPresenter.init(this.#eventsPoints[i]);
       this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
     }
+  }
+
+  /**
+   * метод рендеринга списка точек
+   */
+  #renderEventsList() { // метод отрисовки списка точек маршрута и сортировки
+    this.#renderPointList(); // вставляем список в контейнер
+
+    this.#sortPoints(SortingTypes.DAY); // сортируем задачи по датам
+    this.#renderPoints();
 
     if(this.#pointsList.element.children.length === 0) { // проверка наличия точек маршрута
       this.#renderNoPoint(); // если их нет, рендерим заглушку
