@@ -16,7 +16,7 @@ export default class EventsPresenter {
   #pointPresenters = new Map(); // коллекция с точками маршрута
   #sortComponent = null;
   #currentSortType = SortingTypes.DAY;
-  // #sourcedEventsPoints = [];
+  // #sourcedEventsPoints = []; // копия изначального набора данных
 
   constructor({pointsListContainer, pointsModel}) {
     this.#pointsListContainer = pointsListContainer; // получаем контейнер, в который будет вставлен список точек
@@ -54,9 +54,6 @@ export default class EventsPresenter {
    * @param {*} sortType
    */
   #sortPoints(sortType) {
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _boardTasks
     switch (sortType) {
       case SortingTypes.DAY:
         this.#eventsPoints.sort(sortDay);
@@ -67,7 +64,7 @@ export default class EventsPresenter {
       case SortingTypes.PRICE:
         this.#eventsPoints.sort(sortPrice);
         break;
-      default:
+      // default: // нужно ли значение по-умолчанию?
         // this.#eventsPoints = [...this.#sourcedEventsPoints];
     }
 
@@ -75,16 +72,12 @@ export default class EventsPresenter {
   }
 
   #handleSortTypeChange = (sortType) => {
-    // - Сортируем задачи
-    if (this.#currentSortType === sortType) {
+    if (this.#currentSortType === sortType) { // проверяем какой тип сортировки выбран сейчас
       return;
     }
-
-    this.#sortPoints(sortType);
-    // - Очищаем список
-    this.#clearPointsList();
-    // - Рендерим список заново
-    for(let i = 0; i < this.#eventsPoints.length; i++) { // вставляем в список точки маршрута
+    this.#sortPoints(sortType); // - Сортируем задачи
+    this.#clearPointsList(); // - Очищаем список
+    for(let i = 0; i < this.#eventsPoints.length; i++) { // - Рендерим список заново
       const pointPresenter = new PointPresenter(this.#eventsPoints[i], this.#destinations, this.#offers, this.#handlePointChange, this.#handleModeChange, this.#pointsList);
       pointPresenter.init(this.#eventsPoints[i]);
       this.#pointPresenters.set(this.#eventsPoints[i].id, pointPresenter); // заполняем коллекцию точек маршрута
@@ -119,7 +112,7 @@ export default class EventsPresenter {
   };
 
   /**
-   *
+   * метод закрытия карточек в режиме редактирования (чтобы была открыта только одна)
    */
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());

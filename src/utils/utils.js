@@ -75,7 +75,7 @@ const getWeightForNullDate = (paramA, paramB) => {
 };
 
 /**
- * функция для сортировки по цене ПЕРЕДЕЛАТЬ!!
+ * функция для сортировки по цене
  */
 const sortPrice = (pointA, pointB) => {
   const weight = getWeightForNullDate(pointA.basePrice, pointB.basePrice);
@@ -96,7 +96,7 @@ const sortDay = (pointA, pointB) => {
 };
 
 /**
- * функция для сортировки по времени ПЕРЕДЕЛАТЬ!!!
+ * функция для сортировки по времени
  * @param {*} pointA
  * @param {*} pointB
  * @returns
@@ -106,7 +106,6 @@ const sortTime = (pointA, pointB) => {
 
   return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 };
-
 
 /**
  * функция установки класса для добавленных в избранное
