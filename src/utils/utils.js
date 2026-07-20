@@ -69,32 +69,32 @@ const getWeightForNullDate = (paramA, paramB) => {
   if (paramA === null && paramB === null) {
     return 0;
   }
-
   if (paramA === null) {
     return 1;
   }
-
   if (paramB === null) {
     return -1;
   }
-
   return null;
 };
 
 /**
  * функция для сортировки по цене (от дороже к дешевле)
+ * @param {Object} pointA - объект с данными первой точки маршрута
+ * @param {Object} pointB - объект с данными второй точки маршрута
+ * @returns число - разницу в цене между точками маршрута
  */
-const sortPrice = (pointB, pointA) => {
+const sortPrice = (pointA, pointB) => {
   const weight = getWeightForNullDate(pointA.basePrice, pointB.basePrice);
 
-  return weight ?? pointA.basePrice - pointB.basePrice;
+  return weight ?? pointB.basePrice - pointA.basePrice;
 };
 
 /**
  * функция для сортировки по дате (от ранней к поздней)
- * @param {*} pointA
- * @param {*} pointB
- * @returns
+ * @param {Object} pointA - объект с данными первой точки маршрута
+ * @param {Object} pointB - объект с данными второй точки маршрута
+ * @returns число - разницу во времени между началом точек маршрута
  */
 const sortDay = (pointA, pointB) => {
   const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
@@ -104,20 +104,20 @@ const sortDay = (pointA, pointB) => {
 
 /**
  * функция для сортировки по длительности времени (от более длительной к менее)
- * @param {*} pointA
- * @param {*} pointB
- * @returns
+ * @param {Object} pointA - объект с данными первой точки маршрута
+ * @param {Object} pointB - объект с данными второй точки маршрута
+ * @returns число - разницу в продолжительности точек маршрута
  */
-const sortTime = (pointB, pointA) => {
+const sortTime = (pointA, pointB) => {
   const weight = getWeightForNullDate(dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)), dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)));
 
-  return weight ?? dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)) - dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
+  return weight ?? dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)) - dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
 };
 
 /**
  * функция установки класса для добавленных в избранное
  * @param {boolean} data - из данных точки, ключ isFavorite
- * @returns класс (строку) 'event__favorite-btn--active' или пустую строку
+ * @returns строку (класс в разметке) 'event__favorite-btn--active' или пустую строку
  */
 const setFavoriteClass = (data) => data ? 'event__favorite-btn--active' : '';
 

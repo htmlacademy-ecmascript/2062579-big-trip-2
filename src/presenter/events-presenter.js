@@ -75,9 +75,9 @@ export default class EventsPresenter {
     if (this.#currentSortType === sortType) { // проверяем какой тип сортировки выбран сейчас, если совпадает с выбранным - не перерисовываем список
       return;
     }
-    this.#sortPoints(sortType); // - Сортируем задачи
-    this.#clearPointsList(); // - Очищаем список
-    this.#renderPoints();
+    this.#sortPoints(sortType); // сортируем задачи
+    this.#clearPointsList(); // очищаем список
+    this.#renderPoints(); // отрисовываем точки
   };
 
   /**
