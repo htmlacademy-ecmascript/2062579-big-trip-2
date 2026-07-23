@@ -76,8 +76,9 @@ export default class PointPresenter {
    * метод  для закрытия по esc
    */
   #escKeyDownHandler = (evt) => {
-    if(isEscapeDown) {
+    if(isEscapeDown(evt)) {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point); // сброс состояния
       this.#replaceEditToPoint(); // замена формы на точку
       document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
     }
@@ -138,6 +139,7 @@ export default class PointPresenter {
    */
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point); // сброс состояния
       this.#replaceEditToPoint();
     }
   }
