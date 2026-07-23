@@ -11,6 +11,10 @@ const mockDestinations = [
       {
         src: 'https://loremflickr.com/248/152?random=151',
         description: 'Снова какие-то слова'
+      },
+      {
+        src: 'https://loremflickr.com/248/152?random=101',
+        description: 'Тоже есть описание'
       }
     ]
   },
@@ -20,12 +24,17 @@ const mockDestinations = [
     name: 'New-York',
     pictures: [
       {
-        src: 'https://loremflickr.com/248/152?random=22',
+        src: 'https://loremflickr.com/248/152?random=122',
         description: 'Совершенно случайное фото'
       },
       {
         src: 'https://loremflickr.com/248/152?random=221',
         description: 'Такое же случайное'
+      }
+      ,
+      {
+        src: 'https://loremflickr.com/248/152?random=205',
+        description: 'Снова какие-то слова'
       }
     ]
   },
@@ -37,6 +46,10 @@ const mockDestinations = [
       {
         src: 'https://loremflickr.com/248/152?random=16',
         description: 'Еще какое-то рандомное фото'
+      },
+      {
+        src: 'https://loremflickr.com/248/152?random=160',
+        description: 'И еще одно'
       }
     ]
   },
@@ -52,6 +65,10 @@ const mockDestinations = [
       {
         src: 'https://loremflickr.com/248/152?random=99',
         description: 'И еще одно'
+      },
+      {
+        src: 'https://loremflickr.com/248/152?random=199',
+        description: 'Какие-то слова'
       }
     ]
   },
@@ -63,6 +80,10 @@ const mockDestinations = [
       {
         src: 'https://loremflickr.com/248/152?random=95',
         description: 'Тоже случайное изображение'
+      },
+      {
+        src: 'https://loremflickr.com/248/152?random=59',
+        description: 'И еще одно'
       }
     ]
   },

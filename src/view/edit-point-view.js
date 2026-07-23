@@ -8,6 +8,7 @@ const createEditpointTemplate = (point, destinations, offers) => {
   const pointDestination = destinations.find((dest) => dest.id === point.destination); // находим в пунктах назначения совпадающий по id c указанным в точке маршрута
   const typeOffers = offers.find((offer) => offer.type === point.type).offers; // находим в офферах совпадающие по типу с указанным в точке маршрута
   const selectedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id)); // находим в списке офферов данного типа, выбранные в точке маршрута
+  const pictures = pointDestination.pictures;
 
   const date = getDate(dateFrom, DateFormat.EDIT_POINT);
   const startTime = getTime(dateFrom);
@@ -96,6 +97,17 @@ const createEditpointTemplate = (point, destinations, offers) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${pointDestination.description}</p>
+          ${pictures.length ?
+    `<div class="event__photos-container">
+              <div class="event__photos-tape">
+              ${pictures.map((picture) =>
+    `<img class="event__photo" src="${picture.src}" alt="${picture.description}">
+                </img>`
+  ).join('')}
+              </div>
+            </div>`
+
+    : ''}
         </section>
       </section>
     </form>
@@ -103,7 +115,6 @@ const createEditpointTemplate = (point, destinations, offers) => {
 };
 
 export default class EditPointView extends AbstractStatefulView {
-  // #point = null;
   #destinations = null;
   #offers = null;
   #handleEditClick = null;
@@ -111,7 +122,6 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor(point, destinations, offers, onEditClick, onFormSubmit) {
     super();
-    // this.#point = point;
     this._setState(EditPointView.parsePointToState(point));
     this.#destinations = destinations;
     this.#offers = offers;
@@ -138,7 +148,6 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
-  //*******************************************************
   #typeChangeHandler = (evt) => { // обработчик на выбор типа точки
     this.updateElement({...this._state, type: evt.target.value, offers: []});
   };
@@ -148,7 +157,6 @@ export default class EditPointView extends AbstractStatefulView {
     const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
     this.updateElement({...this._state, destination: selectedDestinationId});
   };
-  //*******************************************************
 
   get template() {
     return createEditpointTemplate(this._state, this.#destinations, this.#offers);
