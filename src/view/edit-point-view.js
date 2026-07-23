@@ -81,7 +81,7 @@ const createEditpointTemplate = (point, destinations, offers) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${typeOffers.map((typeOffer) => `
+            ${typeOffers.length ? typeOffers.map((typeOffer) => `
               <div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-${typeOffer.id}-${id}" type="checkbox" name="event-offer-${typeOffer.id}" ${selectedOffers.map((selectedOffer) => selectedOffer.id).includes(typeOffer.id) ? 'checked' : ''}>
               <label class="event__offer-label" for="event-offer-${typeOffer.id}-${id}">
@@ -89,7 +89,7 @@ const createEditpointTemplate = (point, destinations, offers) => {
                 +€&nbsp;
                 <span class="event__offer-price">${typeOffer.price}</span>
               </label>
-          </div>`).join('')}
+          </div>`).join('') : ''}
 
     </section>` : ''}
 
@@ -136,7 +136,9 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler); // на форму вешаем сабмит
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler); // выбор типа точки
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler); // выбор адреса точки
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
+    if(this.element.querySelector('.event__available-offers')) { // проверка на случай отсутствия офферов в выбранном типе точки
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
+    }
     // this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler); // выбор адреса точки
   }
 
