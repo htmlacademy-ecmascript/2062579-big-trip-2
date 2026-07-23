@@ -4,7 +4,7 @@ import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
 
 const createEditpointTemplate = (point, destinations, offers) => {
-  const {basePrice, dateFrom, dateTo, type } = point;
+  const {id, basePrice, dateFrom, dateTo, type } = point;
   const pointDestination = destinations.find((dest) => dest.id === point.destination); // находим в пунктах назначения совпадающий по id c указанным в точке маршрута
   const typeOffers = offers.find((offer) => offer.type === point.type).offers; // находим в офферах совпадающие по типу с указанным в точке маршрута
   const selectedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id)); // находим в списке офферов данного типа, выбранные в точке маршрута
@@ -18,11 +18,11 @@ const createEditpointTemplate = (point, destinations, offers) => {
     <form class="event event--edit" action="#" method="post" autocomplete="off">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${point.id}" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -31,7 +31,7 @@ const createEditpointTemplate = (point, destinations, offers) => {
               ${POINT_TYPES.map((pointType) => ( // вставляем список с типами маршрута, тип маршрута данной точки выделяем атрибутом checked
     `<div class="event__type-item">
                   <input id="event-type-${pointType}-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${pointType === type ? 'checked' : ''}>
-                  <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-${point.id}">${pointType}</label>
+                  <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-${id}">${pointType}</label>
                 </div>`
   )).join('')}
 
@@ -40,11 +40,11 @@ const createEditpointTemplate = (point, destinations, offers) => {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-${point.id}">
+          <label class="event__label  event__type-output" for="event-destination-${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${point.id}">
-          <datalist id="destination-list-${point.id}">
+          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${id}">
+          <datalist id="destination-list-${id}">
             ${destinations.map((dest) => ( // вставляем пункты назначения в выпадающий список
     `<option value="${dest.name}">
     </option>`
@@ -53,19 +53,19 @@ const createEditpointTemplate = (point, destinations, offers) => {
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${date} ${startTime}">
+          <label class="visually-hidden" for="event-start-time-${id}">From</label>
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${date} ${startTime}">
           —
-          <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${date} ${endTime}">
+          <label class="visually-hidden" for="event-end-time-${id}">To</label>
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${date} ${endTime}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-${point.id}">
+          <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             €
           </label>
-          <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -83,8 +83,8 @@ const createEditpointTemplate = (point, destinations, offers) => {
           <div class="event__available-offers">
             ${typeOffers.map((typeOffer) => `
               <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${typeOffers.id}-${point.id}" type="checkbox" name="event-offer-${typeOffers.id}" ${selectedOffers.map((selectedOffer) => selectedOffer.id).includes(typeOffer.id) ? 'checked' : ''}>
-              <label class="event__offer-label" for="event-offer-${typeOffers.id}-${point.id}">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${typeOffer.id}-${id}" type="checkbox" name="event-offer-${typeOffer.id}" ${selectedOffers.map((selectedOffer) => selectedOffer.id).includes(typeOffer.id) ? 'checked' : ''}>
+              <label class="event__offer-label" for="event-offer-${typeOffer.id}-${id}">
                 <span class="event__offer-title">${typeOffer.title}</span>
                 +€&nbsp;
                 <span class="event__offer-price">${typeOffer.price}</span>
@@ -136,6 +136,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler); // на форму вешаем сабмит
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler); // выбор типа точки
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler); // выбор адреса точки
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
   }
 
   #editClickHandler = (evt) => { // обработчик по клику
@@ -156,6 +157,11 @@ export default class EditPointView extends AbstractStatefulView {
     const selectedDestination = this.#destinations.find((pointDestination) => pointDestination.name === evt.target.value);
     const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
     this.updateElement({...this._state, destination: selectedDestinationId});
+  };
+
+  #offerChangeHandler = () => {
+    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    this._setState({...this._state, offers: checkedOffers.map((checkedOffer) => checkedOffer.dataset.offerId)});
   };
 
   get template() {
