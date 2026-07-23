@@ -97,7 +97,7 @@ const createEditpointTemplate = (point, destinations, offers) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${pointDestination.description}</p>
-          ${pictures.length ?
+          ${pictures.length ? // если есть картинки в описании точки, то отображаем
     `<div class="event__photos-container">
               <div class="event__photos-tape">
               ${pictures.map((picture) =>
@@ -137,6 +137,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler); // выбор типа точки
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler); // выбор адреса точки
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
+    // this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler); // выбор адреса точки
   }
 
   #editClickHandler = (evt) => { // обработчик по клику
@@ -163,6 +164,10 @@ export default class EditPointView extends AbstractStatefulView {
     const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
     this._setState({...this._state, offers: checkedOffers.map((checkedOffer) => checkedOffer.dataset.offerId)});
   };
+
+  // #priceChangeHandler = (evt) => {
+  //   this._setState({...this._state, basePrice: evt.target.valueAsNumber});
+  // };
 
   get template() {
     return createEditpointTemplate(this._state, this.#destinations, this.#offers);
