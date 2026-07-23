@@ -1,4 +1,5 @@
-import AbstractView from '../framework/view/abstract-view.js';
+// import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
 
@@ -101,8 +102,8 @@ const createEditpointTemplate = (point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView extends AbstractView {
-  #point = null;
+export default class EditPointView extends AbstractStatefulView {
+  // #point = null;
   #destinations = null;
   #offers = null;
   #handleEditClick = null;
@@ -110,14 +111,21 @@ export default class EditPointView extends AbstractView {
 
   constructor(point, destinations, offers, onEditClick, onFormSubmit) {
     super();
-    this.#point = point;
+    // this.#point = point;
+    this._setState(EditPointView.parsePointToState(point));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleEditClick = onEditClick;
     this.#handleFormSubmit = onFormSubmit;
 
+    this._restoreHandlers();
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler); // на кнопку-стрелку вешаем обработчик по клику
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler); // на форму вешаем сабмит
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler); // выбор типа точки
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler); // выбор адреса точки
   }
 
   #editClickHandler = (evt) => { // обработчик по клику
@@ -127,10 +135,31 @@ export default class EditPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => { // обработчик на сабмит формы
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
+  //*******************************************************
+  #typeChangeHandler = (evt) => { // обработчик на выбор типа точки
+    this.updateElement({...this._state, type: evt.target.value, offers: []});
+  };
+
+  #destinationChangeHandler = (evt) => { // обработчик на изменение адреса точки
+    const selectedDestination = this.#destinations.find((pointDestination) => pointDestination.name === evt.target.value);
+    const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
+    this.updateElement({...this._state, destination: selectedDestinationId});
+  };
+  //*******************************************************
+
   get template() {
-    return createEditpointTemplate(this.#point, this.#destinations, this.#offers);
+    return createEditpointTemplate(this._state, this.#destinations, this.#offers);
+  }
+
+  static parsePointToState(point) {
+    return{...point};
+  }
+
+  static parseStateToPoint(state) {
+    const point = {...state};
+    return point;
   }
 }

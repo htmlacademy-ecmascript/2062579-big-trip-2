@@ -76,7 +76,7 @@ export default class PointPresenter {
    * метод  для закрытия по esc
    */
   #escKeyDownHandler = (evt) => {
-    if(isEscapeDown) {
+    if(isEscapeDown(evt)) {
       evt.preventDefault();
       this.#replaceEditToPoint(); // замена формы на точку
       document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
