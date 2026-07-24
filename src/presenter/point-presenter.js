@@ -96,6 +96,7 @@ export default class PointPresenter {
    * метод для закрытия формы по кнопке-стрелке
    */
   #onCloseClick = () => {
+    this.#pointEditComponent.reset(this.#point); // сброс состояния
     this.#replaceEditToPoint(); // замена формы на точку
     document.removeEventListener('keydown', this.#escKeyDownHandler); // удаление обработчика по esc
   };
