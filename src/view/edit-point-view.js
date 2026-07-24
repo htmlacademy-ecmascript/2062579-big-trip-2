@@ -1,7 +1,8 @@
-// import AbstractView from '../framework/view/abstract-view.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createEditpointTemplate = (point, destinations, offers) => {
   const {id, basePrice, dateFrom, dateTo, type } = point;
@@ -119,6 +120,8 @@ export default class EditPointView extends AbstractStatefulView {
   #offers = null;
   #handleEditClick = null;
   #handleFormSubmit = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
 
   constructor(point, destinations, offers, onEditClick, onFormSubmit) {
     super();
@@ -140,6 +143,7 @@ export default class EditPointView extends AbstractStatefulView {
       this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
     }
     // this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler); // выбор адреса точки
+    this.#setDatePicker();
   }
 
   #editClickHandler = (evt) => { // обработчик по клику
@@ -162,7 +166,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({...this._state, destination: selectedDestinationId});
   };
 
-  #offerChangeHandler = () => {
+  #offerChangeHandler = () => { // обработчик на изменение выбранных офферов
     const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
     this._setState({...this._state, offers: checkedOffers.map((checkedOffer) => checkedOffer.dataset.offerId)});
   };
@@ -175,8 +179,71 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditpointTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  /**
+   * Переписываем метод родителя removeElement, чтобы при удалении удалялся более не нужный календарь
+   */
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  }
+
   reset(point) {
     this.updateElement(EditPointView.parsePointToState(point));
+  }
+
+  /**
+   * метод изменения начальной даты пользователем
+   */
+  #dateFromCloseHandler = ([userDateFrom]) => {
+    this.updateElement({
+      dateFrom: userDateFrom
+    });
+  };
+
+  /**
+   * метод изменения конечной даты пользователем
+   */
+  #dateToCloseHandler = ([userDateTo]) => {
+    this.updateElement({
+      dateTo: userDateTo
+    });
+  };
+
+  #setDatePicker() {
+    const commonPickerConfig = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      'time_24hr': true,
+    };
+
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('[name="event-start-time"]'),
+      {
+        ...commonPickerConfig,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onClose: this.#dateFromCloseHandler
+      }
+    );
+
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('[name="event-end-time"]'),
+      {
+        ...commonPickerConfig,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onClose: this.#dateToCloseHandler
+      }
+    );
   }
 
   static parsePointToState(point) {
