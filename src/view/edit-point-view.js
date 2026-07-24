@@ -1,7 +1,8 @@
-// import AbstractView from '../framework/view/abstract-view.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getDate, getTime, DateFormat } from '../utils/utils.js';
 import { POINT_TYPES } from '../mock/mock-points.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createEditpointTemplate = (point, destinations, offers) => {
   const {id, basePrice, dateFrom, dateTo, type } = point;
@@ -119,6 +120,8 @@ export default class EditPointView extends AbstractStatefulView {
   #offers = null;
   #handleEditClick = null;
   #handleFormSubmit = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
 
   constructor(point, destinations, offers, onEditClick, onFormSubmit) {
     super();
@@ -140,6 +143,8 @@ export default class EditPointView extends AbstractStatefulView {
       this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler); // изменение выбора офферов
     }
     // this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler); // выбор адреса точки
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   #editClickHandler = (evt) => { // обработчик по клику
@@ -175,8 +180,65 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditpointTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  /**
+   * Переписываем метод родителя removeElement, чтобы при удалении удалялся более не нужный календарь
+   */
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  }
+
   reset(point) {
     this.updateElement(EditPointView.parsePointToState(point));
+  }
+
+  /**
+   * метод изменения начальной даты пользователем
+   */
+  #dateFromChangeHandler = ([userDateFrom]) => {
+    this.updateElement({
+      dateFrom: userDateFrom
+    });
+  };
+
+  /**
+   * метод изменения конечной даты пользователем
+   */
+  #dateToChangeHandler = ([userDateTo]) => {
+    this.updateElement({
+      dateTo: userDateTo
+    });
+  };
+
+  #setDateFromPicker() {
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler
+      }
+    );
+  }
+
+  #setDateToPicker() {
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler
+      }
+    );
   }
 
   static parsePointToState(point) {
